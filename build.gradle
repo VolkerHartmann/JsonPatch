@@ -1,0 +1,58 @@
+plugins {
+    id 'java-library'
+    // plugins for release and publishing to maven repo
+    id 'signing'
+    id 'net.researchgate.release' version '3.1.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'maven-publish'
+}
+
+group = 'edu.kit.datamanager'
+
+
+println "Building ${name} version: ${version}"
+println "Running gradle version: $gradle.gradleVersion"
+println "JDK version: ${JavaVersion.current()}"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+
+    api 'tools.jackson.core:jackson-databind:3.0.3'
+    api 'jakarta.json:jakarta.json-api:2.0.1'
+
+    api 'jakarta.json:jakarta.json-api:2.1.3'         // API definition
+//    implementation 'org.glassfish:jakarta.json:2.0.1' // reference implementation
+
+    implementation 'org.eclipse.parsson:parsson:1.1.4'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = 'JsonPatch'
+        }
+    }
+    repositories {
+        mavenLocal()
+
+    }
+}
