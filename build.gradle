@@ -7,6 +7,11 @@ plugins {
     id 'maven-publish'
 }
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 group = 'edu.kit.datamanager'
 
 
@@ -37,6 +42,45 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+}
+
+def todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+
+// update CITATION.cff file (just date and version)
+tasks.register('updateCitationFile') {
+    doLast {
+        def citationFile = file('CITATION.cff')
+        def lines = citationFile.readLines()
+        def map = ['version': project.version, 'date-released': todayDate]
+        map.each { key, value ->
+            lines = lines.collect { line ->
+                if (line.trim().startsWith("${key}:")) {
+                    return "${key}: ${value}"
+                } else {
+                    return line
+                }
+            }
+        }
+        citationFile.text = lines.join(System.lineSeparator())
+        println "Updated CITATION.cff with version ${project.version} and date ${todayDate}"
+    }
+}
+// update codemeta.json file (just date and version)
+tasks.register('updateCodemetaFile') {
+    doLast {
+        def codemetaFile = file('codemeta.json')
+        def codemeta = new JsonSlurper().parseText(codemetaFile.text)
+        codemeta.version = project.version
+        codemeta.softwareVersion = project.version
+        codemeta.dateModified = todayDate
+
+        codemetaFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(codemeta))
+        println "Updated codemeta.json with (software)version ${project.version} and date ${todayDate}"
+    }
+}
+// Hook the update tasks into the release process
+tasks.named('beforeReleaseBuild') {
+    dependsOn 'updateCitationFile', 'updateCodemetaFile'
 }
 
 test {
