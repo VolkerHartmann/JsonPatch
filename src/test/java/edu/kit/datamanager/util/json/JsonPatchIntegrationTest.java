@@ -25,24 +25,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonPatchIntegrationTest {
 
-  // Static nested test POJOs so Jackson can construct/deserialise them
+  // Static nested test POJOs so Jackson can construct/deserialize them
   public static class InnerClass { public String name; public int[] numbers; }
   public static class Container { public InnerClass inner; }
 
   @Test
-  public void deepNestedReplaceAddMoveCopy() throws Exception {
+  public void deepNestedReplaceAddMoveCopy() {
     JsonMapper mapper = JsonMapper.builder().build();
-    String originalJson = "{\n" +
-      "  \"root\": {\n" +
-      "    \"level1\": {\n" +
-      "      \"level2\": {\n" +
-      "        \"value\": \"old\",\n" +
-      "        \"arr\": [ { \"id\": 1, \"items\": [\"a\",\"b\"] }, { \"id\": 2 } ]\n" +
-      "      }\n" +
-      "    },\n" +
-      "    \"other\": { \"copyMe\": { \"f\": true } }\n" +
-      "  }\n" +
-      "}";
+    String originalJson = """
+        {
+          "root": {
+            "level1": {
+              "level2": {
+                "value": "old",
+                "arr": [ { "id": 1, "items": ["a","b"] }, { "id": 2 } ]
+              }
+            },
+            "other": { "copyMe": { "f": true } }
+          }
+        }""";
 
     JsonNode original = mapper.readTree(originalJson);
 
@@ -63,11 +64,11 @@ public class JsonPatchIntegrationTest {
     JsonNode patched = JsonPatchUtil.applyPatch(original, patch);
 
     // assertions
-    assertEquals("new", patched.at("/root/level1/level2/value").asText());
+    assertEquals("new", patched.at("/root/level1/level2/value").asString());
     // after adding at index 1, items should be ["a","x","b"]
     JsonNode items = patched.at("/root/level1/level2/arr/0/items");
     assertEquals(3, items.size());
-    assertEquals("x", items.get(1).asText());
+    assertEquals("x", items.get(1).asString());
 
     // moved id should exist
     assertEquals(1, patched.at("/root/other/movedId").asInt());
@@ -79,16 +80,17 @@ public class JsonPatchIntegrationTest {
   }
 
   @Test
-  public void applyPatchToPojoWithNestedObjects() throws Exception {
+  public void applyPatchToPojoWithNestedObjects() {
     Container original = new Container();
     original.inner = new InnerClass();
     original.inner.name = "foo";
     original.inner.numbers = new int[]{1,2};
 
-    String patchJson = "["
-      + "{ \"op\": \"replace\", \"path\": \"/inner/name\", \"value\": \"bar\" },"
-      + "{ \"op\": \"add\", \"path\": \"/inner/numbers/-\", \"value\": 3 }"
-      + "]";
+    String patchJson = """
+      [
+        { "op": "replace", "path": "/inner/name", "value": "bar" },
+        { "op": "add", "path": "/inner/numbers/-", "value": 3 }
+      ]""";
 
     Container patched = JsonPatchUtil.applyPatch(original, patchJson, Container.class);
 
@@ -97,7 +99,7 @@ public class JsonPatchIntegrationTest {
   }
 
   @Test
-  public void complexSequenceWithArraysAndObjects() throws Exception {
+  public void complexSequenceWithArraysAndObjects() {
     JsonMapper mapper = JsonMapper.builder().build();
     String originalJson = "{\"list\":[{\"k\":1},{\"k\":2},{\"k\":3}],\"map\":{\"a\":{\"v\":10}}}";
     JsonNode original = mapper.readTree(originalJson);

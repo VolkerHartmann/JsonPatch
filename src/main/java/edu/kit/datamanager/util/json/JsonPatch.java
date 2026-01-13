@@ -21,9 +21,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 
 /**
- * Json structure holding an array of patches.
+ * JSON structure holding an array of patches.
+ *
+ * @param operations List of operations in this patch.
  */
-public class JsonPatch {
+public record JsonPatch(List<Operation> operations) {
   /**
    * Enumeration of supported JSON Patch operations.
    */
@@ -38,13 +40,17 @@ public class JsonPatch {
 
     /**
      * Use op for (JSON) serialization.
+     *
      * @return String representation of the operation
      */
     @JsonValue
-    public String jsonValue() { return op; }
+    public String jsonValue() {
+      return op;
+    }
 
     /**
      * Ignore case for deserializing JSON value.
+     *
      * @param value JSON value
      * @return Corresponding OperationType
      */
@@ -67,25 +73,22 @@ public class JsonPatch {
   }
 
   /**
-   * List of operations in this patch.
-   */
-  private final List<Operation> operations;
-  /**
    * Constructor for JSON deserialization.
    *
    * @param operations List of operations in this patch.
    */
   @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-  public JsonPatch(List<Operation> operations) {
-    this.operations = operations;
+  public JsonPatch {
   }
+
   /**
    * Get the list of operations in this patch.
    *
    * @return List of operations.
    */
+  @Override
   @JsonValue
-  public List<Operation> getOperations() {
+  public List<Operation> operations() {
     return operations;
   }
 
@@ -93,5 +96,6 @@ public class JsonPatch {
    * Representation of a single JSON Patch operation as a nested record.
    * Accessible from outside as `JsonPatch.Operation`.
    */
-  public record Operation(OperationType op, String path, String from, Object value) {}
+  public record Operation(OperationType op, String path, String from, Object value) {
+  }
 }

@@ -26,27 +26,47 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonPatchUtilTest {
+  // simple POJO
+  record Person(String name, int age) {}
 
   @Test
-  public void applyPatchToJsonNode_happyPath() throws Exception {
+  public void applyPatchToJsonNodeWithJsonPatch() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"name\":\"Alice\",\"age\":30}");
 
     List<JsonPatch.Operation> ops = List.of(
-      new JsonPatch.Operation(JsonPatch.OperationType.REPLACE, "/name", null, "Bob"),
-      new JsonPatch.Operation(JsonPatch.OperationType.ADD, "/city", null, "Karlsruhe")
+            new JsonPatch.Operation(JsonPatch.OperationType.REPLACE, "/name", null, "Bob"),
+            new JsonPatch.Operation(JsonPatch.OperationType.ADD, "/city", null, "Karlsruhe")
     );
     JsonPatch patch = new JsonPatch(ops);
 
     JsonNode patched = JsonPatchUtil.applyPatch(original, patch);
 
-    assertEquals("Bob", patched.get("name").asText());
+    assertEquals("Bob", patched.get("name").asString());
     assertEquals(30, patched.get("age").asInt());
-    assertEquals("Karlsruhe", patched.get("city").asText());
+    assertEquals("Karlsruhe", patched.get("city").asString());
   }
 
   @Test
-  public void applyPatchWithNonArrayPatchShouldThrow() throws Exception {
+  public void applyPatchToJsonNodeWithJsonNode() {
+    JsonMapper mapper = JsonMapper.builder().build();
+    JsonNode original = mapper.readTree("{\"name\":\"Alice\",\"age\":30}");
+
+    List<JsonPatch.Operation> ops = List.of(
+            new JsonPatch.Operation(JsonPatch.OperationType.REPLACE, "/name", null, "Bob"),
+            new JsonPatch.Operation(JsonPatch.OperationType.ADD, "/city", null, "Karlsruhe")
+    );
+    JsonNode patchNode = mapper.valueToTree(new JsonPatch(ops));
+
+    JsonNode patched = JsonPatchUtil.applyPatch(original, patchNode);
+
+    assertEquals("Bob", patched.get("name").asString());
+    assertEquals(30, patched.get("age").asInt());
+    assertEquals("Karlsruhe", patched.get("city").asString());
+  }
+
+  @Test
+  public void applyPatchWithNonArrayPatchShouldThrow() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"name\":\"Alice\"}");
 
@@ -58,40 +78,34 @@ public class JsonPatchUtilTest {
 
   @Test
   public void applyPatchPojo_blockedPathShouldThrow() {
-    // simple POJO
-    class Person { public String name; public int age; }
-
-    Person original = new Person();
-    original.name = "Alice";
-    original.age = 30;
-
+    String name = "Betty";
+    int age = 31;
+    Person original = new Person(name, age);
     String patchJson = "[ { \"op\": \"replace\", \"path\": \"/name\", \"value\": \"Bob\" } ]";
 
     PatchOptions options = PatchOptions.ofBlockedPaths(Set.of("/name"));
 
     assertThrows(JsonPatchProcessingException.class, () -> JsonPatchUtil.applyPatch(original, patchJson, Person.class, options));
+    assertEquals(name, original.name);
+    assertEquals(age, original.age);
   }
 
   @Test
   public void applyPatchPojo() {
-    // simple POJO
-    record Person (String name, int age) {}
-
-    Person original = new Person("Alice", 30);
+    String name = "Caroline";
+    int age = 32;
+    Person original = new Person(name, age);
 
     String patchJson = "[ { \"op\": \"replace\", \"path\": \"/name\", \"value\": \"Bob\" } ]";
 
     Person updatedPerson = JsonPatchUtil.applyPatch(original, patchJson, Person.class);
     assertEquals("Bob", updatedPerson.name);
-    assertEquals(30, updatedPerson.age);
+    assertEquals(32, updatedPerson.age);
   }
 
   @Test
-  public void applyPatchPojo_withUnnownField() {
-    // simple POJO
-    record Person (String name, int age) {}
-
-    Person original = new Person("Alice", 30);
+  public void applyPatchPojo_withUnknownField() {
+    Person original = new Person("Doreen", 33);
 
     String patchJson = "[ { \"op\": \"replace\", \"path\": \"/address\", \"value\": \"new address\" } ]";
 
@@ -144,7 +158,7 @@ public class JsonPatchUtilTest {
     String patch = "[{ \"op\": \"replace\", \"path\": \"/b\", \"value\": 3 }]";
 
     JsonNode jsonNode = JsonPatchUtil.applyPatch(JsonPatchUtil.jsonStringToNode(original), patch);
-    assertTrue(jsonNode.get("b").intValue() == 3);
+    assertEquals(3, jsonNode.get("b").intValue());
   }
   @Test
   public void applyPatch_jsonNode_jsonPatch() {
@@ -152,7 +166,7 @@ public class JsonPatchUtilTest {
     String patch = "[{ \"op\": \"replace\", \"path\": \"/b\", \"value\": 3 }]";
 
     JsonNode jsonNode = JsonPatchUtil.applyPatch(JsonPatchUtil.jsonStringToNode(original), JsonPatchUtil.jsonStringToObject(patch, JsonPatch.class));
-    assertTrue(jsonNode.get("b").intValue() == 3);
+    assertEquals(3, jsonNode.get("b").intValue());
   }
 
 

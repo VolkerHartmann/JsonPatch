@@ -70,7 +70,9 @@ import edu.kit.datamanager.util.json.JsonPatchUtil;
 public static class Person { public String name; public int age; }
 
 JsonMapper mapper = JsonMapper.builder().build();
-Person original = new Person(); original.name = "Alice"; original.age = 30;
+Person original = new Person(); 
+original.name = "Alice"; 
+original.age = 30;
 
 String patchJson = "[ { \"op\": \"replace\", \"path\": \"/name\", \"value\": \"Bob\" } ]";
 

@@ -65,13 +65,14 @@ public class JsonPatchUtilErrorTest {
   void testResetForTestingWhileNotAllowed_throwsIllegalStateException() {
     System.setProperty("json.patch.resetForTesting", "false");
     JsonMapper defaultMapper = JsonPatchUtil.getDefaultMapper();
-    assertThrows(IllegalStateException.class, () ->JsonPatchUtil.resetForTesting());
+    assertNotNull(defaultMapper);
+    assertThrows(IllegalStateException.class, JsonPatchUtil::resetForTesting);
     System.setProperty("json.patch.resetForTesting", "true");
   }
 
   @Test
   void testApplyJsonPatch_malformedJson_throwsPatchProcessingException() {
-    var original = new Customer("1", java.util.List.of("Milk"), "001-555-1234");
+    var original = new Customer("1", java.util.List.of("Milk"), "001-111-1234");
     String badPatch = "not-a-json";
 
     assertThrows(JsonPatchProcessingException.class,
@@ -80,7 +81,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyJsonPatch_patchNotArray_throwsPatchProcessingException() {
-     var original = new Customer("1", java.util.List.of("Milk"), "001-555-1234");
+     var original = new Customer("2", java.util.List.of("Milk"), "001-222-1234");
     // Object instead of array => RFC 6902 requires an array of operations
     String patchObject = "{\"op\":\"replace\",\"path\":\"/telephone\",\"value\":\"000\"}";
 
@@ -90,22 +91,22 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyJsonPatch_addNonExistingField_throwsPatchProcessingException() {
-    var original = new Customer("1", java.util.List.of("Milk", "Eggs"), "001-555-1234");
+    var original = new Customer("3", java.util.List.of("Milk", "Eggs"), "001-333-1234");
     // Try to add a non-existing field
-    String patch = "[{ \"op\": \"add\", \"path\": \"/unkownField\", \"value\": \"SomeValue\" }]";
+    String patch = "[{ \"op\": \"add\", \"path\": \"/unknownField\", \"value\": \"SomeValue\" }]";
     // Should work with strings
     String patchedJson = JsonPatchUtil.applyPatch(JsonPatchUtil.jsonObjectToString(original), patch);
-    assertTrue(patchedJson.contains("\"unkownField\":\"SomeValue\""));
+    assertTrue(patchedJson.contains("\"unknownField\":\"SomeValue\""));
     assertThrows(JsonPatchProcessingException.class,
             () -> JsonPatchUtil.applyPatch(original, patch, Customer.class));
-    String validPatch = "[{ \"op\": \"add\", \"path\": \"/telephone\", \"value\": \"001-555-6789\" }]";
+    String validPatch = "[{ \"op\": \"add\", \"path\": \"/telephone\", \"value\": \"001-333-6789\" }]";
     Customer patchedCustomer = JsonPatchUtil.applyPatch(original, validPatch, Customer.class);
-    assertEquals("001-555-6789", patchedCustomer.telephone());
+    assertEquals("001-333-6789", patchedCustomer.telephone());
   }
 
   @Test
   void testApplyJsonPatch_removeNonExistingPath_throwsPatchProcessingException() {
-    var original = new Customer("1", java.util.List.of("Milk", "Eggs"), "001-555-1234");
+    var original = new Customer("4", java.util.List.of("Milk", "Eggs"), "001-444-1234");
     // Try to remove non-existing index 10
     String patch = "[{ \"op\": \"remove\", \"path\": \"/favorites/10\" }]";
 
@@ -115,7 +116,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyJsonPatch_fromBlockedPath_throwsPatchProcessingException() {
-    var original = new Customer("1", java.util.List.of("Milk"), "001-555-1234");
+    var original = new Customer("5", java.util.List.of("Milk"), "001-555-1234");
     // Try to move between paths, where "from" is blocked
     String patch = "[{ \"op\": \"move\", \"from\": \"/id\", \"path\": \"/telephone\" }]";
     var options = PatchOptions.ofBlockedPaths(Set.of("/id"));
@@ -126,7 +127,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyJsonMergePatch_notObject_throwsPathProcessingException() {
-    var original = new Customer("1", java.util.List.of("Milk"), "001-555-1234");
+    var original = new Customer("6", java.util.List.of("Milk"), "001-666-1234");
     // Invalid merge patch
     String mergePatchArray = "[ \"telephone\", \"000\" ]";
 
@@ -136,7 +137,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyPatch_addToNullArray_createsList() {
-    var original = new Customer("1", null, "001-555-1234");
+    var original = new Customer("7", null, "001-777-1234");
     String patch = "[{ \"op\": \"add\", \"path\": \"/favorites/-\", \"value\": \"Milk\" }]";
     // Can't add to null array
     assertThrows(JsonPatchProcessingException.class,
@@ -145,7 +146,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyPatch_addToNullArray_createsList1() {
-    var original = new Customer("1", null, "001-555-1234");
+    var original = new Customer("8", null, "001-888-1234");
     String patch = "[{ \"op\": \"add\", \"path\": \"/favorites/0\", \"value\": \"Milk\" }]";
     // Can't add to null array
     assertThrows(JsonPatchProcessingException.class,
@@ -154,7 +155,7 @@ public class JsonPatchUtilErrorTest {
 
   @Test
   void testApplyMergePatch_setFieldToNull_resultsNull() {
-    var original = new Customer("1", java.util.List.of("Milk"), "001-555-1234");
+    var original = new Customer("9", java.util.List.of("Milk"), "001-999-1234");
     String mergePatch = "{\"telephone\":null}";
 
     var result = JsonPatchUtil.applyMergePatch(original, mergePatch, Customer.class);
@@ -166,18 +167,22 @@ public class JsonPatchUtilErrorTest {
   void testApplyPatch_optionsWithEmptyBlockedPaths_allowsChange() {
     record CustomerMinimal(String id, String telephone) {}
 
-    var original = new CustomerMinimal("1", "001-555-1234");
+    var original = new CustomerMinimal("1", "001-111-1234");
     String patch = "[{\"op\":\"replace\",\"path\":\"/id\",\"value\":\"2\"}]";
-    var options = PatchOptions.ofBlockedPaths(java.util.Set.of()); // leere Menge
+    var options = PatchOptions.ofBlockedPaths(java.util.Set.of()); // empty set
 
     var result = JsonPatchUtil.applyPatch(original, patch, CustomerMinimal.class, options);
 
     assertEquals("2", result.id());
+
+    var original2 = new CustomerMinimal("3", "001-222-1234");
+    var result2 = JsonPatchUtil.applyPatch(original2, patch, CustomerMinimal.class, options);
+    assertEquals("2", result2.id());
   }
 
   @Test
   void testGetJsonObjectToString_withInvalidObject_throwsJsonProcessingException() {
-    class EmptyClass {};
+    class EmptyClass {}
     JsonPatchUtil.configureMapper(builder -> builder.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true));
     assertThrows(JsonPatchProcessingException.class,
             () -> JsonPatchUtil.jsonObjectToString(new EmptyClass()));
