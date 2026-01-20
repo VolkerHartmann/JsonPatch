@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+println "Using deploy profile for building '${name}'"
+
 ////////////////////////////////////////////////////////////////////////////////
 //for java plugin (package JavaDoc and Sources jars)
 //see https://docs.gradle.org/current/userguide/java_plugin.html

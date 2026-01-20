@@ -17,6 +17,8 @@
 // Version tags start with 'v' e.g. v1.0.0
 // codemeta.json and CITATION.cff are updated before release
 ////////////////////////////////////////////////////////////////////////////////
+println "Using release profile for building '${name}'"
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import groovy.json.JsonSlurper

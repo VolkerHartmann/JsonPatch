@@ -26,17 +26,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-def buildPofile = project.findProperty("buildProfile") ?: "minimal"
+def buildProfile = project.findProperty("buildProfile") ?: "minimal"
 
-if (buildPofile == "deploy") {
-    println "Using release profile for building '${name}'"
-    apply from: '$rootDir/gradle/profile-deploy.gradle'
-}
+def profileFile = file("$rootDir/gradle/profile-${buildProfile}.gradle")
 
-//check if release build is requested
-def requested = gradle.startParameter.taskNames
-if (requested.any { it.toLowerCase().endsWith("release") }) {
-    apply from: "$rootDir/gradle/profile-release.gradle"
+if (profileFile.exists()) {
+    apply from: profileFile
+} else {
+    throw new GradleException("Profile-file missing: $profileFile")
 }
 
 dependencies {
