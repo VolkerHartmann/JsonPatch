@@ -1,0 +1,79 @@
+/*
+ * Copyright 2026 Karlsruhe Institute of Technology.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+////////////////////////////////////////////////////////////////////////////////
+//for java plugin (package JavaDoc and Sources jars)
+//see https://docs.gradle.org/current/userguide/java_plugin.html
+////////////////////////////////////////////////////////////////////////////////
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+    withJavadocJar()
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//for plugin io.github.gradle-nexus.publish-plugin
+//see https://github.com/gradle-nexus/publish-plugin
+////////////////////////////////////////////////////////////////////////////////
+nexusPublishing {
+    repositories {
+        // Migration to Sontatype Central
+        // see https://github.com/gradle-nexus/publish-plugin?tab=readme-ov-file#publishing-to-maven-central-via-sonatype-central
+        // see https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuration
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
+        // You need to set your Central credentials (those are different from the legacy OSSRH ones).
+        // To increase security, it is advised to use the user token's username and password pair
+        // (instead of regular username and password).
+        // Those values should be set as the
+        //   sonatypeUsername and
+        //   sonatypePassword project properties, e.g. in ~/.gradle/gradle.properties or
+        //   via the
+        //   ORG_GRADLE_PROJECT_sonatypeUsername and
+        //   ORG_GRADLE_PROJECT_sonatypePassword environment variables.
+        //  For generating the user token, see https://central.sonatype.org/publish/generate-portal-token/
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//for plugin signing
+//see https://docs.gradle.org/current/userguide/signing_plugin.html
+////////////////////////////////////////////////////////////////////////////////
+signing {
+    //make signing required unless for SNAPSHOT releases or if signing is explicitly skipped
+    required { !project.version.endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
+
+    //look for property 'signingKey'
+    if (project.findProperty("signingKey")) {
+        //If required, read a sub-key specified by its ID in property signingKeyId
+        //def signingKeyId = findProperty("signingKeyId")
+        //read property 'signingKey'
+        def signingKey = findProperty("signingKey")
+        //read property 'signingPassword'
+        def signingPassword = findProperty("signingPassword")
+        //Select to use in-memory ascii-armored keys
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        //Only if also using signingKeyId
+        //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+
+        //Apply signing to publication identity 'publishing.publications.maven'
+        sign publishing.publications.mavenJava
+    }else {
+        println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+    }
+}
