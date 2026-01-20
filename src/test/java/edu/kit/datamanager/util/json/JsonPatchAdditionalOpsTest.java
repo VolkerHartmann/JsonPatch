@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsonPatchAdditionalOpsTest {
 
   @Test
-  public void moveOperationMovesValue() throws Exception {
+  public void moveOperationMovesValue() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"a\":{\"value\":\"v\"},\"b\":{}}");
 
@@ -36,12 +36,12 @@ public class JsonPatchAdditionalOpsTest {
 
     JsonNode patched = JsonPatchUtil.applyPatch(original, patch);
 
-    assertEquals("v", patched.at("/b/value").asText());
+    assertEquals("v", patched.at("/b/value").asString());
     assertTrue(patched.at("/a/value").isMissingNode());
   }
 
   @Test
-  public void copyOperationCopiesValue() throws Exception {
+  public void copyOperationCopiesValue() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"a\":{\"value\":\"v\"},\"b\":{}}");
 
@@ -50,12 +50,12 @@ public class JsonPatchAdditionalOpsTest {
 
     JsonNode patched = JsonPatchUtil.applyPatch(original, patch);
 
-    assertEquals("v", patched.at("/b/value").asText());
-    assertEquals("v", patched.at("/a/value").asText()); // original remains
+    assertEquals("v", patched.at("/b/value").asString());
+    assertEquals("v", patched.at("/a/value").asString()); // original remains
   }
 
   @Test
-  public void testOperationSucceedsAndFails() throws Exception {
+  public void testOperationSucceedsAndFails() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"x\":1}");
 
@@ -72,7 +72,7 @@ public class JsonPatchAdditionalOpsTest {
   }
 
   @Test
-  public void addToArrayWithDashAppends() throws Exception {
+  public void addToArrayWithDashAppends() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"arr\":[1,2]}\n");
 
@@ -85,7 +85,7 @@ public class JsonPatchAdditionalOpsTest {
   }
 
   @Test
-  public void removeArrayIndexRemovesElement() throws Exception {
+  public void removeArrayIndexRemovesElement() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"arr\":[1,2,3]}\n");
 
@@ -99,7 +99,7 @@ public class JsonPatchAdditionalOpsTest {
   }
 
   @Test
-  public void replaceNestedValue() throws Exception {
+  public void replaceNestedValue() {
     JsonMapper mapper = JsonMapper.builder().build();
     JsonNode original = mapper.readTree("{\"obj\":{\"nested\":\"old\"}}\n");
 
@@ -107,7 +107,7 @@ public class JsonPatchAdditionalOpsTest {
     JsonPatch patch = new JsonPatch(ops);
 
     JsonNode patched = JsonPatchUtil.applyPatch(original, patch);
-    assertEquals("new", patched.at("/obj/nested").asText());
+    assertEquals("new", patched.at("/obj/nested").asString());
   }
 }
 

@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +29,7 @@ public class JsonPatchTest {
   @Test
   public void defaultConstructorShouldHaveNullOperations() {
     JsonPatch p = new JsonPatch(null);
-    assertNull(p.getOperations(), "operations should be null by default");
+    assertNull(p.operations(), "operations should be null by default");
   }
 
   @Test
@@ -38,8 +38,8 @@ public class JsonPatchTest {
     ops.add(new JsonPatch.Operation(JsonPatch.OperationType.ADD, "/a", null, "value"));
 
     JsonPatch p = new JsonPatch(ops);
-    assertSame(ops, p.getOperations());
-    assertEquals(1, p.getOperations().size());
+    assertSame(ops, p.operations());
+    assertEquals(1, p.operations().size());
   }
 
   @Test
@@ -47,9 +47,9 @@ public class JsonPatchTest {
     JsonPatch.Operation op = new JsonPatch.Operation(JsonPatch.OperationType.ADD, "/a", null, "value");
     List<JsonPatch.Operation> ops = new ArrayList<>();
     ops.add(op);
-    JsonPatch p = new JsonPatch(Arrays.asList(op));
-    assertSame(ops.getFirst(), p.getOperations().getFirst());
-    assertEquals(1, p.getOperations().size());
+    JsonPatch p = new JsonPatch(ops);
+    assertSame(ops.getFirst(), p.operations().getFirst());
+    assertEquals(1, p.operations().size());
   }
 
   @Test
@@ -59,27 +59,27 @@ public class JsonPatchTest {
     ops.add(new JsonPatch.Operation(JsonPatch.OperationType.REMOVE, "/b", null, null));
 
     p = new JsonPatch(ops);
-    assertSame(ops, p.getOperations());
+    assertSame(ops, p.operations());
   }
 
   @Test
   public void operationsListCanBeEmpty() {
     JsonPatch p = new JsonPatch(new ArrayList<>());
-    assertNotNull(p.getOperations());
-    assertTrue(p.getOperations().isEmpty());
+    assertNotNull(p.operations());
+    assertTrue(p.operations().isEmpty());
   }
 
   @Test
   public void testSerializationAndDeserialization() {
     String json = """
       [{"op":"replace","path":"/name","from":null,"value":"Bob"},
-       {"op":"remove","path":"/address","from":null,"value":null}, 
+       {"op":"remove","path":"/address","from":null,"value":null},
        {"op":"add","path":"/age","from":null,"value":"30"}]
    """;
     JsonMapper mapper = JsonMapper.builder().build();
     JsonPatch patch = mapper.readValue(json, JsonPatch.class);
-    assertNotNull(patch.getOperations());
-    assertEquals(3, patch.getOperations().size());
+    assertNotNull(patch.operations());
+    assertEquals(3, patch.operations().size());
     String jsonPatch = mapper.writeValueAsString(patch);
     assertNotNull(jsonPatch);
     assertEquals( json.replaceAll("\\s",""),jsonPatch);
@@ -91,14 +91,14 @@ public class JsonPatchTest {
    """;
     JsonMapper mapper = JsonMapper.builder().build();
     JsonPatch patch = mapper.readValue(json, JsonPatch.class);
-    assertNotNull(patch.getOperations());
-    assertEquals(1, patch.getOperations().size());
-    JsonPatch.Operation op = patch.getOperations().get(0);
+    assertNotNull(patch.operations());
+    assertEquals(1, patch.operations().size());
+    JsonPatch.Operation op = patch.operations().get(0);
     assertEquals(JsonPatch.OperationType.ADD, op.op());
     assertEquals("/person", op.path());
     assertNull(op.from());
     assertNotNull(op.value());
-    assertTrue(op.value() instanceof java.util.Map);
+    assertInstanceOf(Map.class, op.value());
     @SuppressWarnings("unchecked")
     java.util.Map<String,Object> valueMap = (java.util.Map<String,Object>)op.value();
     assertEquals("Alice", valueMap.get("name"));

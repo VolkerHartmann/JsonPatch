@@ -116,7 +116,7 @@ public final class JsonPatchUtil {
    * @throws JsonPatchProcessingException in case of processing errors
    */
   public static String applyPatch(String originalJson, JsonPatch jsonPatch) throws  JsonPatchProcessingException {
-    return applyPatch(originalJson, jsonPatch, (PatchOptions) null);
+    return applyPatch(originalJson, jsonPatch, null);
   }
   /** Applies a JSON Patch (RFC 6902) to a JSON string.
    * @param originalJson Original JSON as String
@@ -125,7 +125,7 @@ public final class JsonPatchUtil {
    * @throws JsonPatchProcessingException in case of processing errors
    */
   public static String applyPatch(String originalJson, JsonNode patchJson) throws  JsonPatchProcessingException {
-    return applyPatch(originalJson, patchJson, (PatchOptions) null);
+    return applyPatch(originalJson, patchJson, null);
   }
   /** Applies a JSON Patch (RFC 6902) to a JsonNode.
    *
@@ -146,7 +146,7 @@ public final class JsonPatchUtil {
    * @throws JsonPatchProcessingException in case of processing errors
    */
   public static JsonNode applyPatch(JsonNode original, JsonPatch jsonPatch) throws   JsonPatchProcessingException {
-    return applyPatch(original, jsonPatch, (PatchOptions) null);
+    return applyPatch(original, jsonPatch, null);
   }
   /**
    * Applies a JSON Patch (RFC 6902) to a JsonNode.
@@ -157,7 +157,7 @@ public final class JsonPatchUtil {
    * @throws JsonPatchProcessingException in case of processing errors
    */
   public static JsonNode applyPatch(JsonNode original, JsonNode patch) throws   JsonPatchProcessingException {
-    return applyPatch(original, patch, (PatchOptions) null);
+    return applyPatch(original, patch, null);
   }
   /**
    * Applies a JSON Patch (RFC 6902) to an object.
@@ -174,8 +174,8 @@ public final class JsonPatchUtil {
   /**
    * Applies a JSON Patch (RFC 6902) to an object represented by a string object.
    * (This could be used if you are still using Jackson 2.)
-   * @param originalJsonAsString Original objekt
-   * @param patchJson JSON Patch (Aaray of operations)
+   * @param originalJsonAsString Original object
+   * @param patchJson JSON Patch (Array of operations)
    * @param options  optional Patch-Options (e.g. blocked paths), null values allowed
    * @return Patched JSON as String
    * @throws JsonPatchProcessingException in case of processing errors
@@ -216,8 +216,8 @@ public final class JsonPatchUtil {
   /**
    * Applies a JSON Patch (RFC 6902) to an object represented by a string object.
    * (This could be used if you are still using Jackson 2.)
-   * @param originalJsonAsString Original objekt
-   * @param patchJson JSON Patch (Aaray of operations)
+   * @param originalJsonAsString Original object
+   * @param patchJson JSON Patch (Array of operations)
    * @param options  optional Patch-Options (e.g. blocked paths), null values allowed
    * @return Patched JSON as String
    * @throws JsonPatchProcessingException in case of processing errors
@@ -228,8 +228,8 @@ public final class JsonPatchUtil {
   /**
    * Applies a JSON Patch (RFC 6902) to an object represented by a string object.
    * (This could be used if you are still using Jackson 2.)
-   * @param originalJsonAsString Original objekt
-   * @param patchJson JSON Patch (Aaray of operations)
+   * @param originalJsonAsString Original object
+   * @param patchJson JSON Patch (Array of operations)
    * @param options  optional Patch-Options (e.g. blocked paths), null values allowed
    * @return Patched JSON as String
    * @throws JsonPatchProcessingException in case of processing errors
@@ -277,8 +277,8 @@ public final class JsonPatchUtil {
     /**
      * Applies a JSON Patch (RFC 6902) to an object.
      *
-     * @param original Original objekt
-     * @param patchJson JSON Patch (Aaray of operations)
+     * @param original Original object
+     * @param patchJson JSON Patch (Array of operations)
      * @param type target type
      * @param options optional Patch-Options (e.g. blocked paths), null values allowed
      * @return Patched object
@@ -405,7 +405,10 @@ public final class JsonPatchUtil {
       throw new JsonPatchProcessingException("Error while parsing JSON string to object!", e);
     }
   }
-
+  /** Reset the JsonPatchUtil for testing purposes.
+   * This method clears any configured mapper settings and allows
+   * re-configuration. It should only be used in testing!
+   */
   static void resetForTesting() {
     if (!Boolean.getBoolean("json.patch.resetForTesting")) {
       throw new IllegalStateException("Resetting JsonPatchUtil is only allowed in testing!");
