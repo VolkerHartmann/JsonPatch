@@ -5,6 +5,7 @@ plugins {
     id 'net.researchgate.release' version '3.1.0'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     id 'maven-publish'
+    id 'jacoco'
 }
 
 description = 'A small utility library for applying JSON Patches to JSON documents.'
@@ -48,9 +49,25 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
 }
-
+/////////////////////////////////////////////////////////////////////////////////
+// Code coverage configuration with JaCoCo
+/////////////////////////////////////////////////////////////////////////////////
 test {
+    finalizedBy jacocoTestReport
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.14"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
