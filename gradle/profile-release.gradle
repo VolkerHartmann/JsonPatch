@@ -49,7 +49,7 @@ release {
 ////////////////////////////////////////////////////////////////////////////////
 tasks.register('updateCitationFile') {
     doLast {
-        def citationFile = file('CITATION.cff')
+        def citationFile = file("$rootDir/CITATION.cff")
         def lines = citationFile.readLines()
         def map = ['version': project.version, 'date-released': todayDate]
         map.each { key, value ->
@@ -57,7 +57,7 @@ tasks.register('updateCitationFile') {
                 if (line.trim().startsWith("${key}:")) {
                     return "${key}: ${value}"
                 } else {
-                    return line
+                    return "${line}"
                 }
             }
         }
