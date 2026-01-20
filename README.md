@@ -1,3 +1,9 @@
+[![Build Status](https://github.com/kit-data-manager/JsonPatch/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/JsonPatch/actions/workflows/gradle.yml)
+[![Codecov](https://codecov.io/gh/kit-data-manager/JsonPatch/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/JsonPatch)
+[![CodeQL](https://github.com/kit-data-manager/JsonPatch/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/JsonPatch/actions/workflows/codeql-analysis.yml)
+![License](https://img.shields.io/github/license/kit-data-manager/JsonPatch.svg)
+![current Version](https://img.shields.io/github/v/release/kit-data-manager/JsonPatch)
+
 # JSON Patch for Jackson 3
 
 A small Java library that applies JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7396) using Jakarta JSON-P and maps the results to POJOs with Jackson 3 (for example in Spring Boot 4).
