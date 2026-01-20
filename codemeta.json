@@ -47,7 +47,6 @@
             "affiliation": "Karlsruhe Institute of Technology (KIT)"
         }
     ],
-
     "funder": [
         {
             "@type": "Organization",
@@ -85,5 +84,8 @@
         "Java 17 or higher"
     ],
     "developmentStatus": "active",
-    "issueTracker": "https://github.com/kit-data-manager/JSONPatch/issues"
+    "issueTracker": "https://github.com/kit-data-manager/JSONPatch/issues",
+    "version": "0.9.0",
+    "softwareVersion": "0.9.0",
+    "dateModified": "2026-01-20"
 }
