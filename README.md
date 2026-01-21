@@ -150,3 +150,7 @@ String result = new PatchUtil(mapper).applyJsonMergePatch(originalJsonString, me
 
 ## License
 Apache License 2.0 — see the LICENSE file.
+
+## Acknowledgements
+
+This work has been supported by the research program [‘Engineering Digital Futures’](https://www.helmholtz.de/en/research/research-fields/information/engineering-digital-futures/) of the [Helmholtz Association of German Research Centers](https://www.helmholtz.de/en) and the [Helmholtz Metadata Collaboration Platform (HMC)](https://helmholtz-metadaten.de/).
