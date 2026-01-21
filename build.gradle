@@ -30,12 +30,6 @@ def buildProfile = project.findProperty("buildProfile") ?: "minimal"
 
 def profileFile = file("$rootDir/gradle/profile-${buildProfile}.gradle")
 
-if (profileFile.exists()) {
-    apply from: profileFile
-} else {
-    throw new GradleException("Profile-file missing: $profileFile")
-}
-
 dependencies {
     implementation 'org.eclipse.parsson:parsson:1.1.4'
     implementation 'org.slf4j:slf4j-api:2.0.9'
@@ -111,4 +105,12 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+// Apply profile-specific build configuration at the end of this build script
+// to ensure that all settings are available.
+if (profileFile.exists()) {
+    apply from: profileFile
+} else {
+    throw new GradleException("Profile-file missing: $profileFile")
 }
