@@ -17,5 +17,8 @@ abstract: "JSONPatch is a Java library that implements the JSON Patch standard (
 url: "https://github.com/kit-data-manager/JsonPatch"
 repository-code:  "https://github.com/kit-data-manager/JsonPatch"
 license: Apache-2.0
+identifiers:
+- type: DOI
+    value: 10.5281/zenodo.18323756
 version: 0.9.0
 date-released: 2026-01-21
