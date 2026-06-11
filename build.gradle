@@ -38,7 +38,7 @@ dependencies {
     api 'tools.jackson.core:jackson-databind:3.0.3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.0'
 }
 /////////////////////////////////////////////////////////////////////////////////
 // Code coverage configuration with JaCoCo
