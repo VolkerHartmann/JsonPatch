@@ -31,14 +31,14 @@ def buildProfile = project.findProperty("buildProfile") ?: "minimal"
 def profileFile = file("$rootDir/gradle/profile-${buildProfile}.gradle")
 
 dependencies {
-    implementation 'org.eclipse.parsson:parsson:1.1.4'
-    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.eclipse.parsson:parsson:1.1.9'
+    implementation 'org.slf4j:slf4j-api:2.0.18'
 
     api 'jakarta.json:jakarta.json-api:2.1.3'         // API definition
-    api 'tools.jackson.core:jackson-databind:3.0.3'
+    api 'tools.jackson.core:jackson-databind:3.2.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.1.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.0'
 }
 /////////////////////////////////////////////////////////////////////////////////
 // Code coverage configuration with JaCoCo
@@ -49,7 +49,7 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.8.14"
+    toolVersion = "0.8.15"
 }
 
 jacocoTestReport {
@@ -67,37 +67,37 @@ jacocoTestReport {
 ///////////////////////////////////////////////////////////////////////////////
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create("mavenJava", MavenPublication) {
             from components.java
             artifactId = 'json-patch-util'
             version = project.version
             pom {
-                name = 'JSON Patch Utility Library'
-                description = 'A small utility library for applying JSON Patches to JSON documents.'
-                url = 'https://datamanager.kit.edu'
+                name.set('JSON Patch Utility Library')
+                description.set('A small utility library for applying JSON Patches to JSON documents.')
+                url.set('https://datamanager.kit.edu')
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name.set('The Apache License, Version 2.0')
+                        url.set('https://www.apache.org/licenses/LICENSE-2.0.txt')
                     }
                 }
                 developers {
                     developer {
-                        id = 'Jejkal'
-                        name = 'Thomas Jejkal'
-                        email = 'webmaster@datamanager.kit.edu'
-                        roles = ['developer', 'maintainer']
+                        id.set('Jejkal')
+                        name.set('Thomas Jejkal')
+                        email.set('webmaster@datamanager.kit.edu')
+                        roles.set(['developer', 'maintainer'])
                     }
                     developer {
-                        id = 'HartmannV'
-                        name = 'Volker Hartmann'
-                        roles = ['developer', 'maintainer']
+                        id.set('HartmannV')
+                        name.set('Volker Hartmann')
+                        roles.set(['developer', 'maintainer'])
                     }
                 }
                 scm {
-                    connection = 'scm:git:github.com/kit-data-manager/JsonPatch'
-                    developerConnection = 'scm:git:github.com/kit-data-manager/JsonPatch'
-                    url = 'https://github.com/kit-data-manager/JsonPatch'
+                    connection.set('scm:git:github.com/kit-data-manager/JsonPatch')
+                    developerConnection.set('scm:git:github.com/kit-data-manager/JsonPatch')
+                    url.set('https://github.com/kit-data-manager/JsonPatch')
                 }
             }
         }

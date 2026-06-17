@@ -93,7 +93,7 @@ public class JsonPatchTest {
     JsonPatch patch = mapper.readValue(json, JsonPatch.class);
     assertNotNull(patch.operations());
     assertEquals(1, patch.operations().size());
-    JsonPatch.Operation op = patch.operations().get(0);
+    JsonPatch.Operation op = patch.operations().getFirst();
     assertEquals(JsonPatch.OperationType.ADD, op.op());
     assertEquals("/person", op.path());
     assertNull(op.from());
