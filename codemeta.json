@@ -15,7 +15,10 @@
             "email": "volker.hartmann@kit.edu",
             "@id": "https://orcid.org/0000-0001-6383-5214",
             "identifier": "https://orcid.org/0000-0001-6383-5214",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         },
         {
             "@type": "Person",
@@ -24,7 +27,10 @@
             "email": "thomas.jejkal@kit.edu",
             "@id": "https://orcid.org/0000-0003-2804-688X",
             "identifier": "https://orcid.org/0000-0003-2804-688X",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         }
     ],
     "maintainer": [
@@ -35,7 +41,10 @@
             "email": "volker.hartmann@kit.edu",
             "@id": "https://orcid.org/0000-0001-6383-5214",
             "identifier": "https://orcid.org/0000-0001-6383-5214",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         },
         {
             "@type": "Person",
@@ -44,29 +53,24 @@
             "email": "thomas.jejkal@kit.edu",
             "@id": "https://orcid.org/0000-0003-2804-688X",
             "identifier": "https://orcid.org/0000-0003-2804-688X",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         }
     ],
     "funder": [
         {
             "@type": "Organization",
             "name": "Helmholtz Association of German Research Centers",
-            "identifier": {
-                "@type": "PropertyValue",
-                "propertyID": "ROR",
-                "value": "https://ror.org/0281dp749"
-            },
-            "sameAs": "https://www.helmholtz.de/"
+            "@id": "https://ror.org/0281dp749",
+            "url": "https://www.helmholtz.de/"
         },
         {
             "@type": "Organization",
             "name": "Helmholtz Metadata Collaboration (HMC)",
-            "identifier": {
-                "@type": "PropertyValue",
-                "propertyID": "ROR",
-                "value": "https://ror.org/04v4h0v24"
-            },
-            "sameAs": "https://helmholtz-metadaten.de/"
+            "@id": "https://ror.org/04v4h0v24",
+            "url": "https://helmholtz-metadaten.de/"
         }
     ],
     "keywords": [
@@ -81,11 +85,11 @@
     "license": "https://spdx.org/licenses/Apache-2.0",
     "runtimePlatform": "JVM",
     "softwareRequirements": [
-        "Java 17 or higher"
+      "https://www.oracle.com/java/technologies/downloads/#java21"
     ],
-    "developmentStatus": "active",
+    "developmentStatus": "Production/Stable",
     "issueTracker": "https://github.com/kit-data-manager/JSONPatch/issues",
-    "version": "0.9.0",
-    "softwareVersion": "0.9.0",
-    "dateModified": "2026-01-21"
+    "version": "1.0.0",
+    "softwareVersion": "1.0.0",
+    "dateModified": "2026-06-17"
 }

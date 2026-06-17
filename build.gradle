@@ -67,37 +67,37 @@ jacocoTestReport {
 ///////////////////////////////////////////////////////////////////////////////
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create("mavenJava", MavenPublication) {
             from components.java
             artifactId = 'json-patch-util'
             version = project.version
             pom {
-                name = 'JSON Patch Utility Library'
-                description = 'A small utility library for applying JSON Patches to JSON documents.'
-                url = 'https://datamanager.kit.edu'
+                name.set('JSON Patch Utility Library')
+                description.set('A small utility library for applying JSON Patches to JSON documents.')
+                url.set('https://datamanager.kit.edu')
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name.set('The Apache License, Version 2.0')
+                        url.set('https://www.apache.org/licenses/LICENSE-2.0.txt')
                     }
                 }
                 developers {
                     developer {
-                        id = 'Jejkal'
-                        name = 'Thomas Jejkal'
-                        email = 'webmaster@datamanager.kit.edu'
-                        roles = ['developer', 'maintainer']
+                        id.set('Jejkal')
+                        name.set('Thomas Jejkal')
+                        email.set('webmaster@datamanager.kit.edu')
+                        roles.set(['developer', 'maintainer'])
                     }
                     developer {
-                        id = 'HartmannV'
-                        name = 'Volker Hartmann'
-                        roles = ['developer', 'maintainer']
+                        id.set('HartmannV')
+                        name.set('Volker Hartmann')
+                        roles.set(['developer', 'maintainer'])
                     }
                 }
                 scm {
-                    connection = 'scm:git:github.com/kit-data-manager/JsonPatch'
-                    developerConnection = 'scm:git:github.com/kit-data-manager/JsonPatch'
-                    url = 'https://github.com/kit-data-manager/JsonPatch'
+                    connection.set('scm:git:github.com/kit-data-manager/JsonPatch')
+                    developerConnection.set('scm:git:github.com/kit-data-manager/JsonPatch')
+                    url.set('https://github.com/kit-data-manager/JsonPatch')
                 }
             }
         }
