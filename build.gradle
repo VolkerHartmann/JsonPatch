@@ -31,14 +31,14 @@ def buildProfile = project.findProperty("buildProfile") ?: "minimal"
 def profileFile = file("$rootDir/gradle/profile-${buildProfile}.gradle")
 
 dependencies {
-    implementation 'org.eclipse.parsson:parsson:1.1.4'
-    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.eclipse.parsson:parsson:1.1.9'
+    implementation 'org.slf4j:slf4j-api:2.0.18'
 
     api 'jakarta.json:jakarta.json-api:2.1.3'         // API definition
-    api 'tools.jackson.core:jackson-databind:3.0.3'
+    api 'tools.jackson.core:jackson-databind:3.2.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.1.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.0'
 }
 /////////////////////////////////////////////////////////////////////////////////
 // Code coverage configuration with JaCoCo
@@ -49,7 +49,7 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.8.14"
+    toolVersion = "0.8.15"
 }
 
 jacocoTestReport {
